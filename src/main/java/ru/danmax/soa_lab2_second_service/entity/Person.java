@@ -14,7 +14,6 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class Person {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NonNull
@@ -23,7 +22,7 @@ public class Person {
     private String passportId;
 
     @NotNull
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 

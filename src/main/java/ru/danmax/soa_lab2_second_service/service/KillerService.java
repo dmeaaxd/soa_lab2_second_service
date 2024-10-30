@@ -1,9 +1,9 @@
 package ru.danmax.soa_lab2_second_service.service;
 
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.danmax.soa_lab2_second_service.entity.Cave;
 import ru.danmax.soa_lab2_second_service.entity.Person;
@@ -12,7 +12,10 @@ import ru.danmax.soa_lab2_second_service.repository.CaveRepository;
 import ru.danmax.soa_lab2_second_service.repository.PersonRepository;
 import ru.danmax.soa_lab2_second_service.repository.TeamRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class KillerService {
@@ -28,13 +31,31 @@ public class KillerService {
         this.caveRepository = caveRepository;
     }
 
-    public Team createKillerTeam(Long teamId, String teamName, Integer teamSize, Long startCaveId, List<Long> killerIds) {
+    public ResponseEntity<?> createKillerTeam(Long teamId, String teamName, Integer teamSize, Long startCaveId, List<Long> killerIds) {
 
-        Cave startCave = caveRepository.findById(startCaveId).orElseThrow(
-                () -> new RuntimeException("Cave not found")
-        );
+        if (teamRepository.existsById(teamId)) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("code", 409);
+            errorResponse.put("message", "Конфликт, либо команда с таким ID уже существует");
+            return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        }
+
+        Optional<Cave> startCaveOptional = caveRepository.findById(startCaveId);
+        if (startCaveOptional.isEmpty()) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("code", 400);
+            errorResponse.put("message", "Пещера не найдена");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+        Cave startCave = startCaveOptional.get();
 
         List<Person> killers = personRepository.findAllById(killerIds);
+        if (killers.size() != killerIds.size()) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("code", 400);
+            errorResponse.put("message", "Некорректные данные");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
 
         Team newTeam = Team.builder()
                 .id(teamId)
@@ -44,24 +65,37 @@ public class KillerService {
                 .killers(killers)
                 .build();
 
-        return teamRepository.save(newTeam);
+        Team savedTeam = teamRepository.save(newTeam);
+        return new ResponseEntity<>(savedTeam, HttpStatus.CREATED);
 
     }
 
 
-    public Team moveKillerTeamToCave(Long teamId, Long caveId) {
+    public ResponseEntity<?> moveKillerTeamToCave(Long teamId, Long caveId) {
 
-        Team team = teamRepository.findById(teamId).orElseThrow(
-                () -> new RuntimeException("Team not found")
-        );
+        Optional<Team> teamOptional = teamRepository.findById(teamId);
+        if (teamOptional.isEmpty()) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("code", 404);
+            errorResponse.put("message", "Команда не найдена");
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+        Team team = teamOptional.get();
 
-        Cave newCave = caveRepository.findById(caveId).orElseThrow(
-                () -> new RuntimeException("Cave not found")
-        );
+
+        Optional<Cave> newCaveOptional = caveRepository.findById(caveId);
+        if (newCaveOptional.isEmpty()) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("code", 404);
+            errorResponse.put("message", "Пещера не найдена");
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+        Cave newCave = newCaveOptional.get();
+
 
         team.setCurrentCave(newCave);
-
-        return teamRepository.save(team);
+        teamRepository.save(team);
+        return ResponseEntity.noContent().build();
     }
 
 }
