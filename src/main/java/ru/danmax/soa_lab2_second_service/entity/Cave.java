@@ -15,11 +15,9 @@ import lombok.NoArgsConstructor;
 public class Cave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "difficulty_level")
-    private Integer difficultyLevel;
 }

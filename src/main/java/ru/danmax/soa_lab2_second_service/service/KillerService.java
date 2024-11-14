@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import ru.danmax.soa_lab2_second_service.dto.KillersDTO;
 import ru.danmax.soa_lab2_second_service.entity.Cave;
 import ru.danmax.soa_lab2_second_service.entity.Person;
 import ru.danmax.soa_lab2_second_service.entity.Team;
@@ -31,12 +32,23 @@ public class KillerService {
         this.caveRepository = caveRepository;
     }
 
-    public ResponseEntity<?> createKillerTeam(Long teamId, String teamName, Integer teamSize, Long startCaveId, List<Long> killerIds) {
+    public ResponseEntity<?> createKillerTeam(Integer teamId, String teamName, Integer teamSize, Integer startCaveId, KillersDTO killersDTO) {
+
+        List<Integer> killerIds = killersDTO.getKillers();
+        System.out.println(killersDTO);
+        System.out.println(killerIds);
 
         if (teamRepository.existsById(teamId)) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("code", 409);
             errorResponse.put("message", "Конфликт, либо команда с таким ID уже существует");
+            return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        }
+
+        if (killerIds.size() > teamSize){
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("code", 409);
+            errorResponse.put("message", "Количество человек превышает размер команды");
             return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
         }
 
@@ -71,7 +83,7 @@ public class KillerService {
     }
 
 
-    public ResponseEntity<?> moveKillerTeamToCave(Long teamId, Long caveId) {
+    public ResponseEntity<?> moveKillerTeamToCave(Integer teamId, Integer caveId) {
 
         Optional<Team> teamOptional = teamRepository.findById(teamId);
         if (teamOptional.isEmpty()) {

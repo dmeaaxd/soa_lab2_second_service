@@ -3,6 +3,7 @@ package ru.danmax.soa_lab2_second_service.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.danmax.soa_lab2_second_service.dto.KillersDTO;
 import ru.danmax.soa_lab2_second_service.service.KillerService;
 
 import java.util.List;
@@ -19,19 +20,20 @@ public class KillerController {
 
 
     @PostMapping("/teams/create/{teamId}/{teamName}/{teamSize}/{startCaveId}")
-    public ResponseEntity<?>  createKillerTeam(
-            @PathVariable Long teamId,
+    public ResponseEntity<?> createKillerTeam(
+            @PathVariable Integer teamId,
             @PathVariable String teamName,
             @PathVariable Integer teamSize,
-            @PathVariable Long startCaveId,
-            @RequestBody List<Long> killerIds
+            @PathVariable Integer startCaveId,
+            @RequestBody KillersDTO killersDTO
     ) {
-        return killerService.createKillerTeam(teamId, teamName, teamSize, startCaveId, killerIds);
+        return killerService.createKillerTeam(teamId, teamName, teamSize, startCaveId, killersDTO);
     }
 
 
+
     @PutMapping("/team/{teamId}/move-to-cave/{caveId}")
-    public ResponseEntity<?> moveKillerTeamToCave(@PathVariable Long teamId, @PathVariable Long caveId) {
+    public ResponseEntity<?> moveKillerTeamToCave(@PathVariable Integer teamId, @PathVariable Integer caveId) {
         return killerService.moveKillerTeamToCave(teamId, caveId);
     }
 }

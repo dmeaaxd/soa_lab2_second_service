@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Team {
     @Id
-    private Long id;
+    private Integer id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -30,6 +30,10 @@ public class Team {
     private Cave currentCave;
 
     @ManyToMany
-    @JoinColumn
+    @JoinTable(
+        name = "team_killers",
+        joinColumns = @JoinColumn(name = "team_id"),
+        inverseJoinColumns = @JoinColumn(name = "killer_id")
+    )
     private List<Person> killers;
 }

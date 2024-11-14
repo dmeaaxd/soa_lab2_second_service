@@ -14,7 +14,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class Person {
 
     @Id
-    private Long id;
+    private Integer id;
 
     @NonNull
     private String name;
