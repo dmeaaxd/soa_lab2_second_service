@@ -14,6 +14,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class Person {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NonNull

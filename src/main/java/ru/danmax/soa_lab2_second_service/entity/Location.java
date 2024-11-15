@@ -1,5 +1,6 @@
 package ru.danmax.soa_lab2_second_service.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,13 +14,14 @@ public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Integer id;
 
-    private int x;
+    private Integer x;
 
-    private double y;
+    private Double y;
 
-    private int z;
+    private Integer z;
 
     @NonNull
     @Column(nullable = false)
