@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/killer")
 public class KillerController {
-    private final String corsOrigin = "http://80.242.57.251:8090";
+    private final String corsOrigin = "*";
 
     private final KillerService killerService;
 
