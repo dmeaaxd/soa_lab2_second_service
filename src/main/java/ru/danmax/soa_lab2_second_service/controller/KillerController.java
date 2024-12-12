@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.danmax.soa_lab2_second_service.dto.KillerDTO;
 import ru.danmax.soa_lab2_second_service.dto.KillersDTO;
-import ru.danmax.soa_lab2_second_service.dto.LocationDTO;
 import ru.danmax.soa_lab2_second_service.entity.Person;
 import ru.danmax.soa_lab2_second_service.service.KillerService;
 
@@ -26,22 +25,22 @@ public class KillerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getKillerById(@PathVariable Integer id) {
+    public ResponseEntity<?> getKillerById(@PathVariable Integer id) throws Exception {
         return killerService.getKillerById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateKiller(@PathVariable Integer id, @RequestBody KillerDTO killerDTO) {
+    public ResponseEntity<?> updateKiller(@PathVariable Integer id, @RequestBody KillerDTO killerDTO) throws Exception {
         return killerService.updateKiller(id, killerDTO);
     }
 
     @PostMapping
-    public ResponseEntity<?> createKiller(@RequestBody KillerDTO killerDTO) {
+    public ResponseEntity<?> createKiller(@RequestBody KillerDTO killerDTO) throws Exception {
         return killerService.createKiller(killerDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteKiller(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteKiller(@PathVariable Integer id) throws Exception {
         return killerService.deleteKiller(id);
     }
 
@@ -53,7 +52,7 @@ public class KillerController {
             @PathVariable Integer teamSize,
             @PathVariable Integer startCaveId,
             @RequestBody KillersDTO killersDTO
-    ) {
+    ) throws Exception {
         return killerService.createKillerTeam(teamId, teamName, teamSize, startCaveId, killersDTO);
     }
 

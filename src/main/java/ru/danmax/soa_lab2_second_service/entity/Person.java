@@ -1,30 +1,29 @@
 package ru.danmax.soa_lab2_second_service.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.antlr.v4.runtime.misc.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-
-@Entity
-@Table(name = "persons")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "persons")
 public class Person {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @NonNull
-    private String name;
+    @Column(nullable = false)
+    private String name; //Поле не может быть null, Строка не может быть пустой
 
-    private String passportId;
+    @Column(length = 32)
+    private String passportId; //Длина строки должна быть не меньше 10, Длина строки не должна быть больше 32, Поле может быть null
 
-    @NotNull
-    @OneToOne
-    @JoinColumn(name = "location_id", nullable = false)
-    private Location location;
-
+    @Embedded
+    @Column(nullable = false)
+    private Location location; //Поле не может быть null
 }

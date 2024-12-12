@@ -1,29 +1,26 @@
 package ru.danmax.soa_lab2_second_service.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "locations")
+
+@Embeddable
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Location {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
-    private Integer id;
-
     private Integer x;
 
-    private Double y;
+    @Column(nullable = false)
+    private Double y; //Поле не может быть null
 
     private Integer z;
 
-    @NonNull
     @Column(nullable = false)
-    private String name;
+    private String locationName; //Строка не может быть пустой, Поле не может быть null
 }
