@@ -192,4 +192,12 @@ public class KillerService {
         }
 
     }
+
+    public List<Team> getKillerTeams() {
+        return teamRepository.findAll();
+    }
+
+    public List<Cave> getCaves() {
+        return caveRepository.findAll();
+    }
 }

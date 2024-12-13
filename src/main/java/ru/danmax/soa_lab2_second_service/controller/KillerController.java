@@ -4,7 +4,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.danmax.soa_lab2_second_service.dto.KillerDTO;
 import ru.danmax.soa_lab2_second_service.dto.KillersDTO;
+import ru.danmax.soa_lab2_second_service.entity.Cave;
 import ru.danmax.soa_lab2_second_service.entity.Person;
+import ru.danmax.soa_lab2_second_service.entity.Team;
 import ru.danmax.soa_lab2_second_service.service.KillerService;
 
 import java.util.List;
@@ -45,6 +47,12 @@ public class KillerController {
     }
 
 
+    @GetMapping("/teams")
+    public List<Team> getKillerTeams() {
+        return killerService.getKillerTeams();
+    }
+
+
     @PostMapping("/teams/create/{teamId}/{teamName}/{teamSize}/{startCaveId}")
     public ResponseEntity<?> createKillerTeam(
             @PathVariable Integer teamId,
@@ -60,5 +68,10 @@ public class KillerController {
     @PutMapping("/team/{teamId}/move-to-cave/{caveId}")
     public ResponseEntity<?> moveKillerTeamToCave(@PathVariable Integer teamId, @PathVariable Integer caveId) {
         return killerService.moveKillerTeamToCave(teamId, caveId);
+    }
+
+    @GetMapping("/caves")
+    public List<Cave> getCaves() {
+        return killerService.getCaves();
     }
 }
