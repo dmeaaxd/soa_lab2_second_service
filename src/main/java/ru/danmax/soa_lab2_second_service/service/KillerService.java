@@ -19,9 +19,7 @@ import ru.danmax.soa_lab2_second_service.repository.CaveRepository;
 import ru.danmax.soa_lab2_second_service.repository.PersonRepository;
 import ru.danmax.soa_lab2_second_service.repository.TeamRepository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -120,6 +118,10 @@ public class KillerService {
                     .passportId(killerDTO.getPassportId())
                     .location(location)
                     .build();
+
+            if (killer.getPassportId() != null && (killer.getPassportId().length() < 10 || killer.getPassportId().length() > 32)) {
+                throw new IncorrectDataException("Длинна passport id должна быть в интервале [10; 32]");
+            }
 
             personRepository.save(killer);
 
