@@ -112,7 +112,7 @@ public class KillerService {
                     .x(killerDTO.getLocation().getX())
                     .y(killerDTO.getLocation().getY())
                     .z(killerDTO.getLocation().getZ())
-                    .locationName(killerDTO.getLocation().getLocationName())
+                    .name(killerDTO.getLocation().getName())
                     .build();
 
             Person killer = Person.builder()
@@ -156,7 +156,7 @@ public class KillerService {
                         .x(killerDTO.getLocation().getX())
                         .y(killerDTO.getLocation().getY())
                         .z(killerDTO.getLocation().getZ())
-                        .locationName(killerDTO.getLocation().getLocationName())
+                        .name(killerDTO.getLocation().getName())
                         .build();
 
                 killer.setName(killerDTO.getName());
