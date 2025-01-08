@@ -31,6 +31,11 @@ public class KillerController {
         return killerService.getKillerById(id);
     }
 
+    @GetMapping("/{id}/killed-dragons")
+    public ResponseEntity<?> getDragonsKilledByKillerFindById(@PathVariable Integer id) throws Exception {
+        return killerService.getDragonsKilledByKillerFindById(id);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateKiller(@PathVariable Integer id, @RequestBody KillerDTO killerDTO) throws Exception {
         return killerService.updateKiller(id, killerDTO);
@@ -46,12 +51,10 @@ public class KillerController {
         return killerService.deleteKiller(id);
     }
 
-
     @GetMapping("/teams")
     public List<Team> getKillerTeams() {
         return killerService.getKillerTeams();
     }
-
 
     @PostMapping("/teams/create/{teamId}/{teamName}/{teamSize}/{startCaveId}")
     public ResponseEntity<?> createKillerTeam(

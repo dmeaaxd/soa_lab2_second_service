@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import ru.danmax.soa_lab2_second_service.Exceptions.IncorrectDataException;
 import ru.danmax.soa_lab2_second_service.Exceptions.TeamSizeErrorException;
 import ru.danmax.soa_lab2_second_service.dto.KillerDTO;
@@ -199,5 +200,16 @@ public class KillerService {
 
     public List<Cave> getCaves() {
         return caveRepository.findAll();
+    }
+
+    public ResponseEntity<?> getDragonsKilledByKillerFindById(Integer id) throws Exception {
+        try {
+            String url = "http://85.192.48.69:8080/webModule-1.0-SNAPSHOT/dragons?killer-id=" + id;
+            RestTemplate restTemplate = new RestTemplate();
+            String result = restTemplate.getForObject(url, String.class);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new IncorrectDataException("Некорректные данные");
+        }
     }
 }
