@@ -17,5 +17,6 @@ import ru.danmax.soa_lab2_second_service.config.WebServiceConfig;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PingResponse {
+    @XmlElement(namespace = WebServiceConfig.NAMESPACE_URI)
     private String message;
 }
