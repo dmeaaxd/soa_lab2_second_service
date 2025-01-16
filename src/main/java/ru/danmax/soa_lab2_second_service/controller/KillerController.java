@@ -7,8 +7,10 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import ru.danmax.soa_lab2_second_service.config.WebServiceConfig;
 import ru.danmax.soa_lab2_second_service.dto.request.CreateKillerTeamRequest;
+import ru.danmax.soa_lab2_second_service.dto.request.GetDragonsKilledByKillerFindByIdRequest;
 import ru.danmax.soa_lab2_second_service.dto.request.MoveKillerTeamToCaveRequest;
 import ru.danmax.soa_lab2_second_service.dto.response.CreateKillerTeamResponse;
+import ru.danmax.soa_lab2_second_service.dto.response.GetDragonsKilledByKillerFindByIdResponse;
 import ru.danmax.soa_lab2_second_service.dto.response.MoveKillerTeamToCaveResponse;
 import ru.danmax.soa_lab2_second_service.service.KillerService;
 
@@ -37,5 +39,13 @@ public class KillerController {
             @RequestPayload MoveKillerTeamToCaveRequest request
     ) throws Exception {
         return killerService.moveKillerTeamToCave(request);
+    }
+
+    @PayloadRoot(namespace = WebServiceConfig.NAMESPACE_URI, localPart = "GetDragonsKilledByKillerFindByIdRequest")
+    @ResponsePayload
+    public GetDragonsKilledByKillerFindByIdResponse getDragonsKilledByKillerFindById(
+            @RequestPayload GetDragonsKilledByKillerFindByIdRequest request
+    ) throws Exception {
+        return killerService.getDragonsKilledByKillerFindById(request);
     }
 }

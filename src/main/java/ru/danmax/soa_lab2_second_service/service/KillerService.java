@@ -1,14 +1,15 @@
 package ru.danmax.soa_lab2_second_service.service;
 
 import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.Transient;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import ru.danmax.soa_lab2_second_service.dto.request.CreateKillerTeamRequest;
+import ru.danmax.soa_lab2_second_service.dto.request.GetDragonsKilledByKillerFindByIdRequest;
 import ru.danmax.soa_lab2_second_service.dto.request.MoveKillerTeamToCaveRequest;
 import ru.danmax.soa_lab2_second_service.dto.response.CreateKillerTeamResponse;
+import ru.danmax.soa_lab2_second_service.dto.response.GetDragonsKilledByKillerFindByIdResponse;
 import ru.danmax.soa_lab2_second_service.dto.response.MoveKillerTeamToCaveResponse;
 import ru.danmax.soa_lab2_second_service.entity.Cave;
 import ru.danmax.soa_lab2_second_service.entity.Person;
@@ -34,7 +35,9 @@ public class KillerService {
         this.caveRepository = caveRepository;
     }
 
-    public CreateKillerTeamResponse createKillerTeam(CreateKillerTeamRequest request) throws Exception{
+    public CreateKillerTeamResponse createKillerTeam(
+            CreateKillerTeamRequest request
+    ) throws Exception{
         List<Integer> killerIds = request.getKillers();
 
         if (teamRepository.existsById(request.getTeamId())) {
@@ -68,7 +71,9 @@ public class KillerService {
         return new CreateKillerTeamResponse(savedTeam);
     }
 
-    public MoveKillerTeamToCaveResponse moveKillerTeamToCave(MoveKillerTeamToCaveRequest request) throws Exception {
+    public MoveKillerTeamToCaveResponse moveKillerTeamToCave(
+            MoveKillerTeamToCaveRequest request
+    ) throws Exception {
         Integer teamId = request.getTeamId();
         Integer caveId = request.getCaveId();
 
@@ -89,5 +94,18 @@ public class KillerService {
         team.setCurrentCave(newCave);
         teamRepository.save(team);
         return new MoveKillerTeamToCaveResponse(team);
+    }
+
+    public GetDragonsKilledByKillerFindByIdResponse getDragonsKilledByKillerFindById(
+            GetDragonsKilledByKillerFindByIdRequest request
+    ) throws Exception {
+        try {
+            String url = "http://85.192.48.69:8080/webModule-1.0-SNAPSHOT/dragons?killer-id=" + request.getKillerId();
+            RestTemplate restTemplate = new RestTemplate();
+            String result = restTemplate.getForObject(url, String.class);
+            return new GetDragonsKilledByKillerFindByIdResponse(result);
+        } catch (Exception e) {
+            throw new IncorrectDataException("Некорректные данные");
+        }
     }
 }
