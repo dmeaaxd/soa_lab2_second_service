@@ -1,11 +1,15 @@
 package ru.danmax.soa_lab2_second_service.service;
 
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.Transient;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.danmax.soa_lab2_second_service.dto.request.CreateKillerTeamRequest;
+import ru.danmax.soa_lab2_second_service.dto.request.MoveKillerTeamToCaveRequest;
 import ru.danmax.soa_lab2_second_service.dto.response.CreateKillerTeamResponse;
+import ru.danmax.soa_lab2_second_service.dto.response.MoveKillerTeamToCaveResponse;
 import ru.danmax.soa_lab2_second_service.entity.Cave;
 import ru.danmax.soa_lab2_second_service.entity.Person;
 import ru.danmax.soa_lab2_second_service.entity.Team;
@@ -64,4 +68,26 @@ public class KillerService {
         return new CreateKillerTeamResponse(savedTeam);
     }
 
+    public MoveKillerTeamToCaveResponse moveKillerTeamToCave(MoveKillerTeamToCaveRequest request) throws Exception {
+        Integer teamId = request.getTeamId();
+        Integer caveId = request.getCaveId();
+
+        Optional<Team> teamOptional = teamRepository.findById(teamId);
+        if (teamOptional.isEmpty()) {
+            throw new ObjectNotFoundException("Команда не найдена", teamId);
+        }
+        Team team = teamOptional.get();
+
+
+        Optional<Cave> newCaveOptional = caveRepository.findById(caveId);
+        if (newCaveOptional.isEmpty()) {
+            throw new ObjectNotFoundException("Пещера не найдена", caveId);
+        }
+        Cave newCave = newCaveOptional.get();
+
+
+        team.setCurrentCave(newCave);
+        teamRepository.save(team);
+        return new MoveKillerTeamToCaveResponse(team);
+    }
 }

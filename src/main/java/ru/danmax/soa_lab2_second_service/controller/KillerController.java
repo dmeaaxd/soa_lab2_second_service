@@ -7,7 +7,9 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import ru.danmax.soa_lab2_second_service.config.WebServiceConfig;
 import ru.danmax.soa_lab2_second_service.dto.request.CreateKillerTeamRequest;
+import ru.danmax.soa_lab2_second_service.dto.request.MoveKillerTeamToCaveRequest;
 import ru.danmax.soa_lab2_second_service.dto.response.CreateKillerTeamResponse;
+import ru.danmax.soa_lab2_second_service.dto.response.MoveKillerTeamToCaveResponse;
 import ru.danmax.soa_lab2_second_service.service.KillerService;
 
 
@@ -27,5 +29,13 @@ public class KillerController {
     ) throws Exception {
         System.out.println(request.toString());
         return killerService.createKillerTeam(request);
+    }
+
+    @PayloadRoot(namespace = WebServiceConfig.NAMESPACE_URI, localPart = "MoveKillerTeamToCaveRequest")
+    @ResponsePayload
+    public MoveKillerTeamToCaveResponse moveKillerTeamToCave(
+            @RequestPayload MoveKillerTeamToCaveRequest request
+    ) throws Exception {
+        return killerService.moveKillerTeamToCave(request);
     }
 }
