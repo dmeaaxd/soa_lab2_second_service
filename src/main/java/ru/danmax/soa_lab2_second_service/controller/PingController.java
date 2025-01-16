@@ -1,13 +1,16 @@
 package ru.danmax.soa_lab2_second_service.controller;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+import ru.danmax.soa_lab2_second_service.config.WebServiceConfig;
+import ru.danmax.soa_lab2_second_service.dto.response.PingResponse;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
-@RestController
-@RequestMapping("/ping")
+@Endpoint
 public class PingController {
-    @GetMapping
-    public String ping() {
-        return "pong";
+    @PayloadRoot(namespace = WebServiceConfig.NAMESPACE_URI, localPart = "PingRequest")
+    @ResponsePayload
+    public PingResponse ping() {
+        return new PingResponse("result");
     }
 }
