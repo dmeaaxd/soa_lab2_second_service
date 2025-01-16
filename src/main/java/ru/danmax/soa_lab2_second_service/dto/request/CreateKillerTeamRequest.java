@@ -17,14 +17,18 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class CreateKillerTeamRequest {
-    @XmlElement(name = "teamId")
+    @XmlElement(namespace = WebServiceConfig.NAMESPACE_URI, required = true)
     private Integer teamId;
-//    @XmlElement(name = "teamName")
-//    private String teamName;
-//    @XmlElement(name = "teamSize")
-//    private Integer teamSize;
-//    @XmlElement(name = "startCaveId")
-//    private Integer startCaveId;
-//    @XmlElement(name = "killers")
-//    private List<Integer> killers;
+
+    @XmlElement(namespace = WebServiceConfig.NAMESPACE_URI, required = true)
+    private String teamName;
+
+    @XmlElement(namespace = WebServiceConfig.NAMESPACE_URI, required = true)
+    private Integer teamSize;
+
+    @XmlElement(namespace = WebServiceConfig.NAMESPACE_URI, required = true)
+    private Integer startCaveId;
+
+    @XmlElement(namespace = WebServiceConfig.NAMESPACE_URI, required = true)
+    private List<Integer> killers;
 }

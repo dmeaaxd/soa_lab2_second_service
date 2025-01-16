@@ -23,21 +23,9 @@ public class KillerController {
     @PayloadRoot(namespace = WebServiceConfig.NAMESPACE_URI, localPart = "CreateKillerTeamRequest")
     @ResponsePayload
     public CreateKillerTeamResponse createKillerTeam(
-            @RequestPayload CreateKillerTeamRequest createKillerTeamRequest
+            @RequestPayload CreateKillerTeamRequest request
     ) throws Exception {
-        System.out.println(createKillerTeamRequest.getTeamId());
-        return killerService.createKillerTeam(createKillerTeamRequest);
+        System.out.println(request.toString());
+        return killerService.createKillerTeam(request);
     }
-
-
-//    @PutMapping("/team/{teamId}/move-to-cave/{caveId}")
-//    public ResponseEntity<?> moveKillerTeamToCave(@PathVariable Integer teamId, @PathVariable Integer caveId) {
-//        return killerService.moveKillerTeamToCave(teamId, caveId);
-//    }
-//
-//    @GetMapping("/{id}/killed-dragons")
-//    public ResponseEntity<?> getDragonsKilledByKillerFindById(@PathVariable Integer id) throws Exception {
-//        return killerService.getDragonsKilledByKillerFindById(id);
-//    }
-//
 }
