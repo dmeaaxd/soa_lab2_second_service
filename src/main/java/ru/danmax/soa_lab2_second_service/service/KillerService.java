@@ -8,8 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import ru.danmax.soa_lab2_second_service.Exceptions.IncorrectDataException;
-import ru.danmax.soa_lab2_second_service.Exceptions.TeamSizeErrorException;
+import ru.danmax.soa_lab2_second_service.dto.request.CreateKillerTeamRequest;
+import ru.danmax.soa_lab2_second_service.dto.response.CreateKillerTeamResponse;
+import ru.danmax.soa_lab2_second_service.exceptions.IncorrectDataException;
+import ru.danmax.soa_lab2_second_service.exceptions.TeamSizeErrorException;
 import ru.danmax.soa_lab2_second_service.dto.KillerDTO;
 import ru.danmax.soa_lab2_second_service.dto.KillersDTO;
 import ru.danmax.soa_lab2_second_service.entity.Cave;
@@ -30,7 +32,6 @@ public class KillerService {
     private final PersonRepository personRepository;
     private final CaveRepository caveRepository;
 
-
     @Autowired
     public KillerService(TeamRepository teamRepository, PersonRepository personRepository, CaveRepository caveRepository) {
         this.teamRepository = teamRepository;
@@ -38,178 +39,72 @@ public class KillerService {
         this.caveRepository = caveRepository;
     }
 
-    public ResponseEntity<?> createKillerTeam(Integer teamId, String teamName, Integer teamSize, Integer startCaveId, KillersDTO killersDTO) throws Exception {
+    public CreateKillerTeamResponse createKillerTeam(CreateKillerTeamRequest request) throws Exception {
 
-        List<Integer> killerIds = killersDTO.getKillers();
-
-        if (teamRepository.existsById(teamId)) {
-            throw new EntityExistsException("Команда с ID = " + teamId + " уже существует");
-        }
-
-        if (killerIds.size() > teamSize) {
-            throw new TeamSizeErrorException("Количество человек превышает размер команды");
-        }
-
-        Optional<Cave> startCaveOptional = caveRepository.findById(startCaveId);
-        if (startCaveOptional.isEmpty()) {
-            throw new ObjectNotFoundException("Пещера не найдена", startCaveId);
-        }
-        Cave startCave = startCaveOptional.get();
-
-        List<Person> killers = personRepository.findAllById(killerIds);
-        if (killers.size() != killerIds.size()) {
-            throw new IncorrectDataException("Некорректные данные");
-        }
-
-        Team newTeam = Team.builder()
-                .id(teamId)
-                .name(teamName)
-                .size(teamSize)
-                .currentCave(startCave)
-                .killers(killers)
-                .build();
-
-        Team savedTeam = teamRepository.save(newTeam);
-        return new ResponseEntity<>(savedTeam, HttpStatus.CREATED);
-
+//        List<Integer> killerIds = request.getKillers();
+//
+//        if (teamRepository.existsById(request.getTeamId())) {
+//            throw new EntityExistsException("Команда с ID = " + request.getTeamId() + " уже существует");
+//        }
+//
+//        if (killerIds.size() > request.getTeamSize()) {
+//            throw new TeamSizeErrorException("Количество человек превышает размер команды");
+//        }
+//
+//        Optional<Cave> startCaveOptional = caveRepository.findById(request.getStartCaveId());
+//        if (startCaveOptional.isEmpty()) {
+//            throw new ObjectNotFoundException("Пещера не найдена", request.getStartCaveId());
+//        }
+//        Cave startCave = startCaveOptional.get();
+//
+//        List<Person> killers = personRepository.findAllById(killerIds);
+//        if (killers.size() != killerIds.size()) {
+//            throw new IncorrectDataException("Некорректные данные");
+//        }
+//
+//        Team newTeam = Team.builder()
+//                .id(request.getTeamId())
+//                .name(request.getTeamName())
+//                .size(request.getTeamSize())
+//                .currentCave(startCave)
+//                .killers(killers)
+//                .build();
+//
+//        Team savedTeam = teamRepository.save(newTeam);
+//        return new CreateKillerTeamResponse(savedTeam);
+        return new CreateKillerTeamResponse();
     }
 
 
-    public ResponseEntity<?> moveKillerTeamToCave(Integer teamId, Integer caveId) {
-
-        Optional<Team> teamOptional = teamRepository.findById(teamId);
-        if (teamOptional.isEmpty()) {
-            throw new ObjectNotFoundException("Команда не найдена", teamId);
-        }
-        Team team = teamOptional.get();
-
-
-        Optional<Cave> newCaveOptional = caveRepository.findById(caveId);
-        if (newCaveOptional.isEmpty()) {
-            throw new ObjectNotFoundException("Пещера не найдена", caveId);
-        }
-        Cave newCave = newCaveOptional.get();
-
-
-        team.setCurrentCave(newCave);
-        teamRepository.save(team);
-        return ResponseEntity.noContent().build();
-    }
-
-    public List<Person> getAllKillers() {
-        return personRepository.findAll();
-    }
-
-    public ResponseEntity<?> createKiller(KillerDTO killerDTO) throws Exception {
-        String passportId = killerDTO.getPassportId();
-        if (personRepository.existsByPassportId(passportId)) {
-            throw new EntityExistsException("Пользователь с id = " + passportId + " ID уже существует");
-        }
-
-        try {
-            Location location = Location.builder()
-                    .x(killerDTO.getLocation().getX())
-                    .y(killerDTO.getLocation().getY())
-                    .z(killerDTO.getLocation().getZ())
-                    .name(killerDTO.getLocation().getName())
-                    .build();
-
-            Person killer = Person.builder()
-                    .name(killerDTO.getName())
-                    .passportId(killerDTO.getPassportId())
-                    .location(location)
-                    .build();
-
-            if (killer.getPassportId() != null && (killer.getPassportId().length() < 10 || killer.getPassportId().length() > 32)) {
-                throw new IncorrectDataException("Длинна passport id должна быть в интервале [10; 32]");
-            }
-
-            personRepository.save(killer);
-
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception e) {
-            throw new IncorrectDataException("Некорректные данные");
-        }
-
-    }
-
-
-    public ResponseEntity<?> getKillerById(Integer id) throws Exception {
-        try {
-            if (personRepository.existsById(id)) {
-                Person killer = personRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Убийца"));
-                return new ResponseEntity<>(killer, HttpStatus.OK);
-            } else {
-                throw new ObjectNotFoundException("Убийца не найден", id);
-            }
-        } catch (Exception e) {
-            throw new IncorrectDataException("Некорректные данные");
-
-        }
-    }
-
-
-    public ResponseEntity<?> updateKiller(Integer id, KillerDTO killerDTO) throws Exception {
-
-        try {
-            if (personRepository.existsById(id)) {
-                Person killer = personRepository.findById(id).orElse(null);
-
-                Location location = Location.builder()
-                        .x(killerDTO.getLocation().getX())
-                        .y(killerDTO.getLocation().getY())
-                        .z(killerDTO.getLocation().getZ())
-                        .name(killerDTO.getLocation().getName())
-                        .build();
-
-                killer.setName(killerDTO.getName());
-                killer.setPassportId(killerDTO.getPassportId());
-                killer.setLocation(location);
-
-                personRepository.save(killer);
-
-                return ResponseEntity.ok().build();
-            } else {
-                throw new ObjectNotFoundException("Убийца не найден", id);
-
-            }
-        } catch (Exception e) {
-            throw new IncorrectDataException("Некорректные данные");
-        }
-    }
-
-    public ResponseEntity<?> deleteKiller(Integer id) throws Exception {
-        try {
-            if (personRepository.existsById(id)) {
-                Person killer = personRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Убийца"));
-                personRepository.delete(killer);
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                throw new ObjectNotFoundException("Убийца не найден", id);
-            }
-        } catch (Exception e) {
-            throw new IncorrectDataException("Некорректные данные");
-
-        }
-
-    }
-
-    public List<Team> getKillerTeams() {
-        return teamRepository.findAll();
-    }
-
-    public List<Cave> getCaves() {
-        return caveRepository.findAll();
-    }
-
-    public ResponseEntity<?> getDragonsKilledByKillerFindById(Integer id) throws Exception {
-        try {
-            String url = "http://85.192.48.69:8080/webModule-1.0-SNAPSHOT/dragons?killer-id=" + id;
-            RestTemplate restTemplate = new RestTemplate();
-            String result = restTemplate.getForObject(url, String.class);
-            return new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (Exception e) {
-            throw new IncorrectDataException("Некорректные данные");
-        }
-    }
+//    public ResponseEntity<?> moveKillerTeamToCave(Integer teamId, Integer caveId) {
+//
+//        Optional<Team> teamOptional = teamRepository.findById(teamId);
+//        if (teamOptional.isEmpty()) {
+//            throw new ObjectNotFoundException("Команда не найдена", teamId);
+//        }
+//        Team team = teamOptional.get();
+//
+//
+//        Optional<Cave> newCaveOptional = caveRepository.findById(caveId);
+//        if (newCaveOptional.isEmpty()) {
+//            throw new ObjectNotFoundException("Пещера не найдена", caveId);
+//        }
+//        Cave newCave = newCaveOptional.get();
+//
+//
+//        team.setCurrentCave(newCave);
+//        teamRepository.save(team);
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    public ResponseEntity<?> getDragonsKilledByKillerFindById(Integer id) throws Exception {
+//        try {
+//            String url = "http://85.192.48.69:8080/webModule-1.0-SNAPSHOT/dragons?killer-id=" + id;
+//            RestTemplate restTemplate = new RestTemplate();
+//            String result = restTemplate.getForObject(url, String.class);
+//            return new ResponseEntity<>(result, HttpStatus.OK);
+//        } catch (Exception e) {
+//            throw new IncorrectDataException("Некорректные данные");
+//        }
+//    }
 }
