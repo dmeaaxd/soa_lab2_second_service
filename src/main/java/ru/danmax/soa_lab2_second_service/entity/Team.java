@@ -29,7 +29,7 @@ public class Team {
     @JoinColumn(name = "cave_id")
     private Cave currentCave;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "team_killers",
         joinColumns = @JoinColumn(name = "team_id"),
