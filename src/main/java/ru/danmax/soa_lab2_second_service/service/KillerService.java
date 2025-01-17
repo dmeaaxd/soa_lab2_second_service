@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.danmax.soa_lab2_second_service.dto.request.CreateKillerTeamRequest;
-import ru.danmax.soa_lab2_second_service.dto.request.GetDragonsKilledByKillerFindByIdRequest;
+import ru.danmax.soa_lab2_second_service.dto.request.IdRequest;
 import ru.danmax.soa_lab2_second_service.dto.request.MoveKillerTeamToCaveRequest;
 import ru.danmax.soa_lab2_second_service.dto.response.*;
 import ru.danmax.soa_lab2_second_service.entity.Cave;
@@ -95,10 +95,10 @@ public class KillerService {
     }
 
     public StringResponse getDragonsKilledByKillerFindById(
-            GetDragonsKilledByKillerFindByIdRequest request
+            IdRequest request
     ) throws Exception {
         try {
-            String url = "http://85.192.48.69:8080/webModule-1.0-SNAPSHOT/dragons?killer-id=" + request.getKillerId();
+            String url = "http://85.192.48.69:8080/webModule-1.0-SNAPSHOT/dragons?killer-id=" + request.getId();
             RestTemplate restTemplate = new RestTemplate();
             String result = restTemplate.getForObject(url, String.class);
             return new StringResponse(result);
