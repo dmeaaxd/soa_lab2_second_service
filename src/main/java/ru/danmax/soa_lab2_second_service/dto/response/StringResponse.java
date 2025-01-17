@@ -16,7 +16,7 @@ import ru.danmax.soa_lab2_second_service.config.WebServiceConfig;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetDragonsKilledByKillerFindByIdResponse {
+public class StringResponse {
     @XmlElement(namespace = WebServiceConfig.NAMESPACE_URI)
-    private String dragons;
+    private String string;
 }

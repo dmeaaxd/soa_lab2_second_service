@@ -8,9 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import ru.danmax.soa_lab2_second_service.dto.request.CreateKillerTeamRequest;
 import ru.danmax.soa_lab2_second_service.dto.request.GetDragonsKilledByKillerFindByIdRequest;
 import ru.danmax.soa_lab2_second_service.dto.request.MoveKillerTeamToCaveRequest;
-import ru.danmax.soa_lab2_second_service.dto.response.CreateKillerTeamResponse;
-import ru.danmax.soa_lab2_second_service.dto.response.GetDragonsKilledByKillerFindByIdResponse;
-import ru.danmax.soa_lab2_second_service.dto.response.MoveKillerTeamToCaveResponse;
+import ru.danmax.soa_lab2_second_service.dto.response.*;
 import ru.danmax.soa_lab2_second_service.entity.Cave;
 import ru.danmax.soa_lab2_second_service.entity.Person;
 import ru.danmax.soa_lab2_second_service.entity.Team;
@@ -35,7 +33,7 @@ public class KillerService {
         this.caveRepository = caveRepository;
     }
 
-    public CreateKillerTeamResponse createKillerTeam(
+    public TeamResponse createKillerTeam(
             CreateKillerTeamRequest request
     ) throws Exception{
         List<Integer> killerIds = request.getKillers();
@@ -68,10 +66,10 @@ public class KillerService {
                 .build();
 
         Team savedTeam = teamRepository.save(newTeam);
-        return new CreateKillerTeamResponse(savedTeam);
+        return new TeamResponse(savedTeam);
     }
 
-    public MoveKillerTeamToCaveResponse moveKillerTeamToCave(
+    public TeamResponse moveKillerTeamToCave(
             MoveKillerTeamToCaveRequest request
     ) throws Exception {
         Integer teamId = request.getTeamId();
@@ -93,17 +91,17 @@ public class KillerService {
 
         team.setCurrentCave(newCave);
         teamRepository.save(team);
-        return new MoveKillerTeamToCaveResponse(team);
+        return new TeamResponse(team);
     }
 
-    public GetDragonsKilledByKillerFindByIdResponse getDragonsKilledByKillerFindById(
+    public StringResponse getDragonsKilledByKillerFindById(
             GetDragonsKilledByKillerFindByIdRequest request
     ) throws Exception {
         try {
             String url = "http://85.192.48.69:8080/webModule-1.0-SNAPSHOT/dragons?killer-id=" + request.getKillerId();
             RestTemplate restTemplate = new RestTemplate();
             String result = restTemplate.getForObject(url, String.class);
-            return new GetDragonsKilledByKillerFindByIdResponse(result);
+            return new StringResponse(result);
         } catch (Exception e) {
             throw new IncorrectDataException("Некорректные данные");
         }

@@ -9,9 +9,7 @@ import ru.danmax.soa_lab2_second_service.config.WebServiceConfig;
 import ru.danmax.soa_lab2_second_service.dto.request.CreateKillerTeamRequest;
 import ru.danmax.soa_lab2_second_service.dto.request.GetDragonsKilledByKillerFindByIdRequest;
 import ru.danmax.soa_lab2_second_service.dto.request.MoveKillerTeamToCaveRequest;
-import ru.danmax.soa_lab2_second_service.dto.response.CreateKillerTeamResponse;
-import ru.danmax.soa_lab2_second_service.dto.response.GetDragonsKilledByKillerFindByIdResponse;
-import ru.danmax.soa_lab2_second_service.dto.response.MoveKillerTeamToCaveResponse;
+import ru.danmax.soa_lab2_second_service.dto.response.*;
 import ru.danmax.soa_lab2_second_service.service.KillerService;
 
 
@@ -26,7 +24,7 @@ public class KillerController {
 
     @PayloadRoot(namespace = WebServiceConfig.NAMESPACE_URI, localPart = "CreateKillerTeamRequest")
     @ResponsePayload
-    public CreateKillerTeamResponse createKillerTeam(
+    public TeamResponse createKillerTeam(
             @RequestPayload CreateKillerTeamRequest request
     ) throws Exception {
         System.out.println(request.toString());
@@ -35,7 +33,7 @@ public class KillerController {
 
     @PayloadRoot(namespace = WebServiceConfig.NAMESPACE_URI, localPart = "MoveKillerTeamToCaveRequest")
     @ResponsePayload
-    public MoveKillerTeamToCaveResponse moveKillerTeamToCave(
+    public TeamResponse moveKillerTeamToCave(
             @RequestPayload MoveKillerTeamToCaveRequest request
     ) throws Exception {
         return killerService.moveKillerTeamToCave(request);
@@ -43,7 +41,7 @@ public class KillerController {
 
     @PayloadRoot(namespace = WebServiceConfig.NAMESPACE_URI, localPart = "GetDragonsKilledByKillerFindByIdRequest")
     @ResponsePayload
-    public GetDragonsKilledByKillerFindByIdResponse getDragonsKilledByKillerFindById(
+    public StringResponse getDragonsKilledByKillerFindById(
             @RequestPayload GetDragonsKilledByKillerFindByIdRequest request
     ) throws Exception {
         return killerService.getDragonsKilledByKillerFindById(request);

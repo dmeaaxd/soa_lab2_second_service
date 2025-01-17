@@ -9,8 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.danmax.soa_lab2_second_service.config.WebServiceConfig;
-import ru.danmax.soa_lab2_second_service.entity.Team;
+import ru.danmax.soa_lab2_second_service.entity.Person;
 
+import java.util.List;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -18,7 +19,7 @@ import ru.danmax.soa_lab2_second_service.entity.Team;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateKillerTeamResponse {
+public class PersonListResponse {
     @XmlElement(namespace = WebServiceConfig.NAMESPACE_URI)
-    private Team team;
+    private List<Person> persons;
 }

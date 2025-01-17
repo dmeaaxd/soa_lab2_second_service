@@ -18,7 +18,7 @@ import ru.danmax.soa_lab2_second_service.entity.Team;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MoveKillerTeamToCaveResponse {
+public class TeamResponse {
     @XmlElement(namespace = WebServiceConfig.NAMESPACE_URI)
     private Team team;
 }

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.danmax.soa_lab2_second_service.config.WebServiceConfig;
+import ru.danmax.soa_lab2_second_service.entity.Person;
+import ru.danmax.soa_lab2_second_service.entity.Team;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -16,7 +18,7 @@ import ru.danmax.soa_lab2_second_service.config.WebServiceConfig;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PingResponse {
+public class PersonResponse {
     @XmlElement(namespace = WebServiceConfig.NAMESPACE_URI)
-    private String message;
+    private Person person;
 }
