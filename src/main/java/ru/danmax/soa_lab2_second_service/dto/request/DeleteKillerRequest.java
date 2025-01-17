@@ -7,14 +7,14 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.*;
 import ru.danmax.soa_lab2_second_service.config.WebServiceConfig;
 
-@XmlRootElement(namespace = WebServiceConfig.NAMESPACE_URI, name = "IdRequest")
+@XmlRootElement(namespace = WebServiceConfig.NAMESPACE_URI, name = "DeleteKillerRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class IdRequest {
+public class DeleteKillerRequest {
     @XmlElement(namespace = WebServiceConfig.NAMESPACE_URI, required = true)
     private Integer id;
 }
