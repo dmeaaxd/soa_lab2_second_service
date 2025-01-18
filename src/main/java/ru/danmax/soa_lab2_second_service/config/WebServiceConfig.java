@@ -12,6 +12,7 @@ import org.springframework.ws.transport.http.MessageDispatcherServlet;
 public class WebServiceConfig {
 
     public static final String NAMESPACE_URI = "http://localhost:8081/ws";
+    public static final String MULE_URI = "http://localhost:8084/soap/mule";
 
     @Bean
     public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext applicationContext) {

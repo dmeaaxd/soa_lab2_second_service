@@ -1,0 +1,21 @@
+package ru.danmax.soa_lab2_second_service.service.converter.xml_entity;
+
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@XmlRootElement(name = "Envelope")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Envelope {
+    @XmlElement(name = "Body")
+    private Body body;
+}

@@ -1,10 +1,14 @@
 package ru.danmax.soa_lab2_second_service.service;
 
 import jakarta.persistence.EntityExistsException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Unmarshaller;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import ru.danmax.soa_lab2_second_service.config.WebServiceConfig;
 import ru.danmax.soa_lab2_second_service.dto.request.CreateKillerTeamRequest;
 import ru.danmax.soa_lab2_second_service.dto.request.GetDragonsKilledByKillerFindByIdRequest;
 import ru.danmax.soa_lab2_second_service.dto.request.MoveKillerTeamToCaveRequest;
@@ -15,7 +19,10 @@ import ru.danmax.soa_lab2_second_service.entity.Team;
 import ru.danmax.soa_lab2_second_service.exception.IncorrectDataException;
 import ru.danmax.soa_lab2_second_service.exception.TeamSizeErrorException;
 import ru.danmax.soa_lab2_second_service.repository.*;
+import ru.danmax.soa_lab2_second_service.service.converter.ResponseConverter;
+import ru.danmax.soa_lab2_second_service.service.converter.xml_entity.Dragon;
 
+import java.io.StringReader;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +42,7 @@ public class KillerService {
 
     public TeamResponse createKillerTeam(
             CreateKillerTeamRequest request
-    ) throws Exception{
+    ) throws Exception {
         List<Integer> killerIds = request.getKillers();
 
         if (teamRepository.existsById(request.getTeamId())) {
@@ -94,16 +101,38 @@ public class KillerService {
         return new TeamResponse(team);
     }
 
-    public StringResponse getDragonsKilledByKillerFindById(
+    public DragonListResponse getDragonsKilledByKillerFindById(
             GetDragonsKilledByKillerFindByIdRequest request
     ) throws Exception {
-        try {
-            String url = "http://85.192.48.69:8080/webModule-1.0-SNAPSHOT/dragons?killer-id=" + request.getId();
-            RestTemplate restTemplate = new RestTemplate();
-            String result = restTemplate.getForObject(url, String.class);
-            return new StringResponse(result);
-        } catch (Exception e) {
-            throw new IncorrectDataException("Некорректные данные");
+        HttpEntity<String> entity = getStringHttpEntity(request);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> result = restTemplate.exchange(WebServiceConfig.MULE_URI, HttpMethod.POST, entity, String.class);
+
+        if (result.getStatusCode() != HttpStatusCode.valueOf(200)){
+            throw new Exception(result.getBody());
         }
+
+        List<Dragon> dragons = ResponseConverter.convert(result.getBody());
+        return new DragonListResponse(dragons);
+    }
+
+    private static HttpEntity<String> getStringHttpEntity(GetDragonsKilledByKillerFindByIdRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/xml");
+
+        String requestPayload = """
+                <Envelope>
+                    <Header/>
+                    <Body>
+                        <GetDragonsKilledByKillerFindByIdRequest>
+                            <killerId>""" +
+                request.getId() +
+                """
+                        </killerId>
+                                </GetDragonsKilledByKillerFindByIdRequest>
+                            </Body>
+                        </Envelope>""";
+        return new HttpEntity<>(requestPayload, headers);
     }
 }

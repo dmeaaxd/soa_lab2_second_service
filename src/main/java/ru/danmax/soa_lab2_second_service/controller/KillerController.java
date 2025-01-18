@@ -41,7 +41,7 @@ public class KillerController {
 
     @PayloadRoot(namespace = WebServiceConfig.NAMESPACE_URI, localPart = "GetDragonsKilledByKillerFindByIdRequest")
     @ResponsePayload
-    public StringResponse getDragonsKilledByKillerFindById(
+    public DragonListResponse getDragonsKilledByKillerFindById(
             @RequestPayload GetDragonsKilledByKillerFindByIdRequest request
     ) throws Exception {
         return killerService.getDragonsKilledByKillerFindById(request);
